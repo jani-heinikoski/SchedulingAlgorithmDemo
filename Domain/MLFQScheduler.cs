@@ -9,9 +9,8 @@ namespace Domain
 {
     public class MLFQScheduler : IScheduler
     {
-        private readonly IScheduler[] schedulers;
-        private readonly Queue<Process>[] queues;
-
+        private readonly IScheduler[] _schedulers;
+        private readonly Queue<Process>[] _queues;
 
         public MLFQScheduler(IScheduler[] schedulers)
         {
@@ -23,17 +22,17 @@ namespace Domain
             {
                 throw new ArgumentException("At least one scheduler must be provided", nameof(schedulers));
             }
-            this.schedulers = schedulers;
-            this.queues = new Queue<Process>[schedulers.Length];
-            for (int i = 0; i < this.queues.Length; i++)
+            _schedulers = schedulers;
+            _queues = new Queue<Process>[schedulers.Length];
+            for (int i = 0; i < _queues.Length; i++)
             {
-                this.queues[i] = new Queue<Process>();
+                _queues[i] = new Queue<Process>();
             }
         }
 
         public void OnProcessArrived(Process process)
         {
-            this.queues[0].Enqueue(process);
+            _queues[0].Enqueue(process);
         }
 
         public void ProcessOneTimeStep()
