@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Domain
 {
@@ -49,6 +45,7 @@ namespace Domain
                 .Where(t => t.Item1 != null)
                 .DistinctBy(t => t.Item1!.Pid)
                 .Select(t => t.Item1!)
+                .OrderBy(p => p!.Pid)
                 .ToList();
             if (uniqueProcesses != null)
             {
