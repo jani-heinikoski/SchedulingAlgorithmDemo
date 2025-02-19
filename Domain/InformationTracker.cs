@@ -24,16 +24,13 @@ namespace Domain
 
         public void CPUIdle(ushort time)
         {
-            if (time <= 0)
-            {
-                throw new ArgumentException("Time must be greater than 0", nameof(time));
-            }
             Tuple<Process?, ushort> tuple = new(null, time);
             _info.Add(tuple);
         }
 
         override public string ToString()
         {
+            // Title
             StringBuilder sb = new();
             sb.Append($"| {"ID/T",-3}| ");
             for (uint i = 0; i < _info.Count; ++i)
@@ -41,12 +38,14 @@ namespace Domain
                 sb.Append($"{i,-3} | ");
             }
             sb.Append("\n");
-            var uniqueProcesses = _info
+            // Find unique processes ordered by their pid's
+            List<Process>? uniqueProcesses = _info
                 .Where(t => t.Item1 != null)
                 .DistinctBy(t => t.Item1!.Pid)
                 .Select(t => t.Item1!)
                 .OrderBy(p => p!.Pid)
                 .ToList();
+            // Compose the table
             if (uniqueProcesses != null)
             {
                 foreach (Process p in uniqueProcesses)
