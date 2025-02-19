@@ -23,7 +23,7 @@
             {
                 return;
             }
-            Predicate<Process> arrivalTimePredicate = process => process.ArrivalTime == _currentTime;
+            bool arrivalTimePredicate(Process process) => process.ArrivalTime == _currentTime;
             List<Process> enqueueProcesses = _processes.FindAll(arrivalTimePredicate);
             _processes.RemoveAll(arrivalTimePredicate);
             foreach (Process process in enqueueProcesses)
