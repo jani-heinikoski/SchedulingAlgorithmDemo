@@ -10,8 +10,8 @@ List<Process> processes = new()
     new Process("P4", 5, 6),
     new Process("P5", 3, 9)
 };
-ISchedulerSimulator scheduler = new RRScheduler(3, processes);
+ISchedulerSimulator scheduler = new RRScheduler(3);
 
-scheduler.ScheduleAll();
+scheduler.ScheduleAll(processes);
 
 Console.WriteLine(scheduler.InfoTracker.ToString());

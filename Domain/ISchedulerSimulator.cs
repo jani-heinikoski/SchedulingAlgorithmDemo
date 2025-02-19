@@ -7,14 +7,9 @@
     public interface ISchedulerSimulator
     {
         /// <summary>
-        /// Gets the list of processes given to the scheduler.
-        /// </summary>
-        List<Process> Processes { get; }
-
-        /// <summary>
         /// Consumes the processes list and schedules all processes.
         /// </summary>
-        void ScheduleAll();
+        void ScheduleAll(List<Process> Processes);
 
         /// <summary>
         /// Gets the scheduling information.

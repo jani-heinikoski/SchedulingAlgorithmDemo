@@ -1,50 +1,22 @@
 ﻿namespace Domain
 {
-    public class RRScheduler : ISchedulerSimulator
+    public class RRScheduler : BaseScheduler
     {
         private readonly Queue<Process> _readyQueue;
         private readonly ushort _timeQuantum;
-        private readonly List<Process> _processes;
-        private ulong _currentTime = 0;
 
-        private readonly InformationTracker _infoTracker;
-        public InformationTracker InfoTracker => _infoTracker;
-
-        public List<Process> Processes => _processes;
-
-        public RRScheduler(ushort timeQuantum, List<Process> processes)
+        public RRScheduler(ushort timeQuantum) : base()
         {
             _readyQueue = new();
             _timeQuantum = timeQuantum;
-            _infoTracker = new();
-            _processes = processes;
         }
 
-        private void EnqueueProcessesFromList()
+        override protected void EnqueueProcess(Process process)
         {
-            Predicate<Process> arrivalTimePredicate = process => process.ArrivalTime == _currentTime;
-            List<Process> enqueueProcesses = _processes.FindAll(arrivalTimePredicate);
-            _processes.RemoveAll(arrivalTimePredicate);
-            foreach (Process process in enqueueProcesses)
-            {
-                _readyQueue.Enqueue(process);
-            }
+            _readyQueue.Enqueue(process);
         }
 
-        private void IncreaseCurrentTime()
-        {
-            // Fail safe to prevent infinite loop
-            if (_currentTime < ulong.MaxValue)
-            {
-                _currentTime++;
-            }
-            else
-            {
-                throw new InvalidOperationException("Current time has reached the maximum value");
-            }
-        }
-
-        private protected void Schedule()
+        override protected void Schedule()
         {
             EnqueueProcessesFromList();
             // Check if there are processes to be scheduled
@@ -55,7 +27,7 @@
                 {
                     process.RunFor(1);
                     InfoTracker.GiveCPUTime(process, 1);
-                    IncreaseCurrentTime();
+                    NextTimeStep();
                     EnqueueProcessesFromList();
                     // Check if process has completed
                     if (process.IsCompleted())
@@ -76,12 +48,9 @@
             }
         }
 
-        public void ScheduleAll()
+        override protected bool IsFinished()
         {
-            while (_processes.Count > 0 || _readyQueue.Count > 0)
-            {
-                Schedule();
-            }
+            return _processes.Count == 0 && _readyQueue.Count == 0;
         }
     }
 }
