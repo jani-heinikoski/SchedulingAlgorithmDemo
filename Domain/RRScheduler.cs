@@ -18,33 +18,29 @@
 
         override protected void Schedule()
         {
-            EnqueueProcessesFromList();
             // Check if there are processes to be scheduled
             if (_readyQueue.Count > 0)
             {
+                // Select the process at the front of the queue
                 Process process = _readyQueue.Dequeue();
+                // Give the process CPU time for the time quantum
                 for (ushort u = 0; u < _timeQuantum; ++u)
                 {
-                    process.RunFor(1);
-                    InfoTracker.GiveCPUTime(process, 1);
+                    RunProcessFor(process, 1);
                     NextTimeStep();
-                    EnqueueProcessesFromList();
-                    // Check if process has completed
+                    // Stop if the process has completed
                     if (process.IsCompleted())
                     {
-                        break;
+                        return;
                     }
                 }
-                // Check if process has not completed
-                if (!process.IsCompleted())
-                {
-                    _readyQueue.Enqueue(process);
-                }
+                EnqueueProcess(process);
             }
             else
             {
-                // CPU idles for 1 time unit because no processes to schedule in the ready queue
-                InfoTracker.CPUIdle(1);
+                // CPU idles for 1 time unit if no processes in the ready queue
+                IdleCPUFor(1);
+                NextTimeStep();
             }
         }
 
