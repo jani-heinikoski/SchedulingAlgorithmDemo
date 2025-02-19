@@ -3,8 +3,8 @@
     public class Process
     {
 
-        private readonly string _pid;
-        public string Pid => _pid;
+        private readonly uint _pid;
+        public uint Pid => _pid;
 
         private ushort _burstTime;
         public ushort BurstTime => _burstTime;
@@ -15,7 +15,7 @@
         private readonly ushort _arrivalTime;
         public ushort ArrivalTime => _arrivalTime;
 
-        public Process(string pid, ushort burstTime, ushort arrivalTime)
+        public Process(uint pid, ushort burstTime, ushort arrivalTime)
         {
             _pid = pid;
             _burstTime = burstTime;
